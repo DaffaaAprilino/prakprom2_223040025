@@ -15,9 +15,13 @@ public class CameraLoanForm extends JPanel {
   private JTextField loanDateField;
   private JTextField returnDateField;
   private DefaultTableModel tableModel;
+  private JList<String> accessoriesList;
+  private JSlider loanDurationSlider;
+  private JSpinner cameraCountSpinner;
+  private JTable table;
 
   public CameraLoanForm() {
-    setLayout(new BorderLayout(10, 10));
+    setLayout(new GridLayout(1, 2, 10, 10));
     setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
     // Panel Form Input
@@ -75,9 +79,41 @@ public class CameraLoanForm extends JPanel {
     cameraTypeBox = new JComboBox<>(new String[] { "Canon EOS", "Nikon D850", "Sony A7 III" });
     inputPanel.add(cameraTypeBox, gbc);
 
-    // Tanggal Peminjaman
+    // Aksesori Tambahan (JList)
     gbc.gridx = 0;
     gbc.gridy = 5;
+    inputPanel.add(new JLabel("Aksesori Tambahan:"), gbc);
+    gbc.gridx = 1;
+    accessoriesList = new JList<>(new String[] { "Tripod", "Lensa Tambahan", "Baterai Cadangan" });
+    accessoriesList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+    JScrollPane accessoriesScrollPane = new JScrollPane(accessoriesList);
+    inputPanel.add(accessoriesScrollPane, gbc);
+
+    // Panel untuk Durasi Peminjaman dan Jumlah Kamera
+    JPanel loanInfoPanel = new JPanel(new GridLayout(2, 2, 5, 5));
+
+    // Durasi Peminjaman (JSlider)
+    loanInfoPanel.add(new JLabel("Durasi Peminjaman (hari):"));
+    loanDurationSlider = new JSlider(1, 30, 7);
+    loanDurationSlider.setMajorTickSpacing(5);
+    loanDurationSlider.setPaintTicks(true);
+    loanDurationSlider.setPaintLabels(true);
+    loanInfoPanel.add(loanDurationSlider);
+
+    // Jumlah Kamera (JSpinner)
+    loanInfoPanel.add(new JLabel("Jumlah Kamera:"));
+    cameraCountSpinner = new JSpinner(new SpinnerNumberModel(1, 1, 5, 1));
+    loanInfoPanel.add(cameraCountSpinner);
+
+    gbc.gridx = 0;
+    gbc.gridy = 6;
+    gbc.gridwidth = 2; // Mengatur lebar panel untuk memasukkan info pinjaman
+    inputPanel.add(loanInfoPanel, gbc);
+
+    // Tanggal Peminjaman
+    gbc.gridwidth = 1; // Reset lebar panel
+    gbc.gridx = 0;
+    gbc.gridy = 7;
     inputPanel.add(new JLabel("Tanggal Peminjaman:"), gbc);
     gbc.gridx = 1;
     loanDateField = new JTextField("YYYY-MM-DD", 20);
@@ -85,7 +121,7 @@ public class CameraLoanForm extends JPanel {
 
     // Tanggal Pengembalian
     gbc.gridx = 0;
-    gbc.gridy = 6;
+    gbc.gridy = 8;
     inputPanel.add(new JLabel("Tanggal Pengembalian:"), gbc);
     gbc.gridx = 1;
     returnDateField = new JTextField("YYYY-MM-DD", 20);
@@ -93,24 +129,28 @@ public class CameraLoanForm extends JPanel {
 
     // Setuju Syarat & Ketentuan
     gbc.gridx = 0;
-    gbc.gridy = 7;
+    gbc.gridy = 9;
     gbc.gridwidth = 2;
     termsCheckBox = new JCheckBox("Setuju Syarat & Ketentuan");
     inputPanel.add(termsCheckBox, gbc);
 
-    // Tombol Tambah Data
+    // Tombol Tambah Data dan Hapus Data
     gbc.gridx = 0;
-    gbc.gridy = 8;
+    gbc.gridy = 10;
     gbc.gridwidth = 2;
     gbc.anchor = GridBagConstraints.CENTER;
+    JPanel buttonPanel = new JPanel();
     JButton addButton = new JButton("Tambah");
-    inputPanel.add(addButton, gbc);
+    JButton deleteButton = new JButton("Hapus");
+    buttonPanel.add(addButton);
+    buttonPanel.add(deleteButton);
+    inputPanel.add(buttonPanel, gbc);
 
     // Tabel Riwayat Peminjaman
-    String[] columns = { "Nama", "ID", "Alamat", "Jenis Peminjam", "Jenis Kamera", "Tgl Peminjaman",
-        "Tgl Pengembalian" };
+    String[] columns = { "Nama", "ID", "Alamat", "Jenis Peminjam", "Jenis Kamera", "Aksesori", "Durasi (hari)",
+        "Jumlah", "Tgl Peminjaman", "Tgl Pengembalian" };
     tableModel = new DefaultTableModel(columns, 0);
-    JTable table = new JTable(tableModel);
+    table = new JTable(tableModel);
     JScrollPane tableScrollPane = new JScrollPane(table);
     tableScrollPane.setBorder(BorderFactory.createTitledBorder("Riwayat Peminjaman"));
 
@@ -128,10 +168,29 @@ public class CameraLoanForm extends JPanel {
         String address = addressField.getText();
         String userType = studentButton.isSelected() ? "Mahasiswa" : "Umum";
         String cameraType = (String) cameraTypeBox.getSelectedItem();
+        String accessories = String.join(", ", accessoriesList.getSelectedValuesList());
+        int duration = loanDurationSlider.getValue();
+        int cameraCount = (int) cameraCountSpinner.getValue();
         String loanDate = loanDateField.getText();
         String returnDate = returnDateField.getText();
 
-        tableModel.addRow(new Object[] { name, id, address, userType, cameraType, loanDate, returnDate });
+        // Tambahkan data ke tabel
+        tableModel.addRow(new Object[] { name, id, address, userType, cameraType, accessories, duration, cameraCount,
+            loanDate, returnDate });
+
+        // Tampilkan dialog pop-up dengan laporan peminjaman
+        String report = "Laporan Peminjaman:\n" +
+            "Nama: " + name + "\n" +
+            "ID: " + id + "\n" +
+            "Alamat: " + address + "\n" +
+            "Jenis Peminjam: " + userType + "\n" +
+            "Jenis Kamera: " + cameraType + "\n" +
+            "Aksesori: " + accessories + "\n" +
+            "Durasi: " + duration + " hari\n" +
+            "Jumlah: " + cameraCount + "\n" +
+            "Tanggal Peminjaman: " + loanDate + "\n" +
+            "Tanggal Pengembalian: " + returnDate;
+        JOptionPane.showMessageDialog(null, report, "Laporan Peminjaman", JOptionPane.INFORMATION_MESSAGE);
 
         // Clear input fields after adding to table
         nameField.setText("");
@@ -140,11 +199,29 @@ public class CameraLoanForm extends JPanel {
         loanDateField.setText("YYYY-MM-DD");
         returnDateField.setText("YYYY-MM-DD");
         userTypeGroup.clearSelection();
+        accessoriesList.clearSelection();
+        loanDurationSlider.setValue(7);
+        cameraCountSpinner.setValue(1);
         termsCheckBox.setSelected(false);
       }
     });
 
-    add(inputPanel, BorderLayout.NORTH);
-    add(tableScrollPane, BorderLayout.CENTER);
+    // Action untuk menghapus data dari tabel
+    deleteButton.addActionListener(new ActionListener() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        int selectedRow = table.getSelectedRow();
+        if (selectedRow != -1) {
+          tableModel.removeRow(selectedRow);
+          JOptionPane.showMessageDialog(null, "Data berhasil dihapus.");
+        } else {
+          JOptionPane.showMessageDialog(null, "Pilih baris yang ingin dihapus.");
+        }
+      }
+    });
+
+    // Menambahkan panel input dan tabel ke dalam layout utama
+    add(inputPanel);
+    add(tableScrollPane);
   }
 }
