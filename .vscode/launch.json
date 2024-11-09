@@ -6,6 +6,13 @@
   "configurations": [
     {
       "type": "java",
+      "name": "BiodataView",
+      "request": "launch",
+      "mainClass": "view.BiodataView",
+      "projectName": "prakprom2_223040025_e2a31735"
+    },
+    {
+      "type": "java",
       "name": "Current File",
       "request": "launch",
       "mainClass": "${file}"
