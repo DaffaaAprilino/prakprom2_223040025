@@ -9,17 +9,17 @@ import view.jenismember.JenisMemberFrame;
 import view.member.MemberFrame;
 
 public class MainFrame extends JFrame {
-    private JenisMemberFrame jenisMemberFrame ;
+    private JenisMemberFrame jenisMemberFrame;
     private MemberFrame memberFrame;
     private JButton buttonJenisMember;
     private JButton buttonMember;
     private JenisMemberDao jenisMemberDao;
     private MemberDao memberDao;
 
-    public MainFrame(JenisMemberDao jenisMemberDao, MemberDao memberDao){
+    public MainFrame(JenisMemberDao jenisMemberDao, MemberDao memberDao) {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        
-        this.setSize(400,500);
+
+        this.setSize(400, 500);
 
         this.jenisMemberDao = jenisMemberDao;
         this.memberDao = memberDao;
@@ -40,25 +40,24 @@ public class MainFrame extends JFrame {
         this.add(buttonMember);
     }
 
-    public JButton getButtonJenisMember(){
+    public JButton getButtonJenisMember() {
         return buttonJenisMember;
     }
 
-    public JButton getButtonMember(){
+    public JButton getButtonMember() {
         return buttonMember;
     }
 
-    public void showJenisMemberFrame(){
-        if(jenisMemberFrame == null){
+    public void showJenisMemberFrame() {
+        if (jenisMemberFrame == null) {
             jenisMemberFrame = new JenisMemberFrame(jenisMemberDao);
         }
         jenisMemberFrame.setVisible(true);
     }
 
+    public void showMemberFrame() {
 
-    public void showMemberFrame(){
-
-        if(memberFrame == null){
+        if (memberFrame == null) {
             memberFrame = new MemberFrame(memberDao, jenisMemberDao);
         }
         memberFrame.populateComboJenis();

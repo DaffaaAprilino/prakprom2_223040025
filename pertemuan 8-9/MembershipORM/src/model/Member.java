@@ -1,6 +1,6 @@
 package model;
 
-public class Member{
+public class Member {
     private String id;
     private String nama;
     private String jenisMemberId;
@@ -9,7 +9,7 @@ public class Member{
     public void setId(String id) {
         this.id = id;
     }
-    
+
     public String getId() {
         return id;
     }
@@ -38,5 +38,4 @@ public class Member{
         this.jenisMember = jenisMember;
     }
 
-    
 }

@@ -12,7 +12,6 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 import model.JenisMember;
 
-
 public class JenisMemberDetailFrame extends JFrame {
 
     private JTextField textFieldId;
@@ -22,7 +21,7 @@ public class JenisMemberDetailFrame extends JFrame {
     private JComboBox comboJenis;
     private List<JenisMember> jenisMemberList;
 
-    public JenisMemberDetailFrame(JenisMember jenisMember,JenisMemberDao jenisMemberDao) {
+    public JenisMemberDetailFrame(JenisMember jenisMember, JenisMemberDao jenisMemberDao) {
         this.jenisMember = jenisMember;
         this.jenisMemberDao = jenisMemberDao;
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -31,7 +30,7 @@ public class JenisMemberDetailFrame extends JFrame {
         labelId.setBounds(15, 40, 350, 10);
         textFieldId = new JTextField(jenisMember.getId());
         textFieldId.setBounds(15, 60, 350, 30);
-        textFieldId.setEditable(false);  // ID tidak bisa diedit
+        textFieldId.setEditable(false); // ID tidak bisa diedit
 
         JLabel labelNama = new JLabel("Nama:");
         labelNama.setBounds(15, 100, 350, 10);
@@ -67,19 +66,14 @@ public class JenisMemberDetailFrame extends JFrame {
         this.setLayout(null);
     }
 
-
-
     private void updateMember() {
         jenisMember.setNama(textFieldNama.getText());
         jenisMemberDao.update(jenisMember);
-        this.dispose(); // Tutup window setelah update
-        // Refresh tabel di MemberFrame (lihat langkah 3)
+        this.dispose();
     }
 
     private void deleteMember() {
-        jenisMemberDao.delete(jenisMember.getId()); //Asumsi ID adalah integer
-        this.dispose(); // Tutup window setelah delete
-        // Refresh tabel di MemberFrame (lihat langkah 3)
+        jenisMemberDao.delete(jenisMember.getId());
+        this.dispose();
     }
-    
 }
